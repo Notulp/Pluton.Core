@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CF3338F9-D5E5-4A92-A9C3-49B17A60EDA0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Pluton.Core</RootNamespace>
+    <AssemblyName>Pluton.Core</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
+    <ApplicationManifest>BaseSingleton.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <LangVersion>6</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <LangVersion>6</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>references\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>references\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Deps">
+      <HintPath>references\IronPython.Deps.dll</HintPath>
+    </Reference>
+    <Reference Include="Jint">
+      <HintPath>references\Jint.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive">
+      <HintPath>references\System.Reactive.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>references\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="MoonSharp.Interpreter">
+      <HintPath>references\MoonSharp.Interpreter.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading">
+      <HintPath>references\System.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="Facepunch.Network">
+      <HintPath>references\Facepunch.Network.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimedEvent.cs" />
+    <Compile Include="ISingleton.cs" />
+    <Compile Include="Singleton.cs" />
+    <Compile Include="CountedInstance.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Stopper.cs" />
+    <Compile Include="SingletonEx.cs" />
+    <Compile Include="ReflectionExtensions.cs" />
+    <Compile Include="IniParser.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Hooks.cs" />
+    <Compile Include="Dump.cs" />
+    <Compile Include="DirectoryConfig.cs" />
+    <Compile Include="DataStore.cs" />
+    <Compile Include="CoreConfig.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Bootstrap.cs" />
+    <Compile Include="Serialize\ISerializable.cs" />
+    <Compile Include="Serialize\UnityEngineExtensions.cs" />
+    <Compile Include="Serialize\SerializedVector3.cs" />
+    <Compile Include="Serialize\SerializedQuaternion.cs" />
+    <Compile Include="PluginLoaders\BasePlugin.cs" />
+    <Compile Include="PluginLoaders\CSharpPlugin.cs" />
+    <Compile Include="PluginLoaders\CSPlugin.cs" />
+    <Compile Include="PluginLoaders\CSSPlugin.cs" />
+    <Compile Include="PluginLoaders\IPlugin.cs" />
+    <Compile Include="PluginLoaders\IPluginLoader.cs" />
+    <Compile Include="PluginLoaders\JSPlugin.cs" />
+    <Compile Include="PluginLoaders\LUAPlugin.cs" />
+    <Compile Include="PluginLoaders\PluginLoader.cs" />
+    <Compile Include="PluginLoaders\PYPlugin.cs" />
+    <Compile Include="CryptoExtensions.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="PluginLoaders\PluginLoader.Generic.cs" />
+    <Compile Include="PluginLoaders\PluginLoaderHelper.cs" />
+    <Compile Include="PluginLoaders\PluginWatcher.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Serialize\" />
+    <Folder Include="PluginLoaders\" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <None Include="PluginLoaders\PHPPlugin.cs" />
+  </ItemGroup>
+</Project>
