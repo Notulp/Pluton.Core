@@ -33,14 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>references\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>references\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="IronPython.Deps">
       <HintPath>references\IronPython.Deps.dll</HintPath>
       <Private>False</Private>
@@ -63,10 +55,6 @@
     </Reference>
     <Reference Include="System.Threading">
       <HintPath>references\System.Threading.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Facepunch.Network">
-      <HintPath>references\Facepunch.Network.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

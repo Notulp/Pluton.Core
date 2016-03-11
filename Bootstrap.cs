@@ -76,14 +76,6 @@
 			DataStore.GetInstance().Load();
 
 			ReloadTimers();
-
-			InstallThreadedOutput();
-		}
-
-		public static void InstallThreadedOutput()
-		{
-			Application.logMessageReceivedThreaded += Logger.ThreadedLogRecieved;
-			Application.logMessageReceived += Logger.LogRecieved;
 		}
 
 		public class ServerTimers

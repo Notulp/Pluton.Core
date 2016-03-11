@@ -267,54 +267,6 @@
 
 			WriteChat(Msg);
 		}
-
-		static Windows.ConsoleInput input = null;
-		static List<string> AlreadyLogged = new List<string>(250);
-
-		static DateTime loggedlistCleared = DateTime.Now;
-
-		public static void LogRecieved(string condition, string stackTrace, LogType type)
-		{
-			if (loggedlistCleared.AddSeconds(2) < DateTime.Now)
-			{
-				AlreadyLogged.Clear();
-				loggedlistCleared = DateTime.Now;
-				Console.WriteLine("CLEAR");
-			}
-			if (!AlreadyLogged.Contains(condition))
-				AlreadyLogged.Add(condition);
-		}
-
-		public static void ThreadedLogRecieved(string condition, string stackTrace, LogType type)
-		{
-			if (input == null)
-				input = (Windows.ConsoleInput)ServerConsole.Instance?.GetFieldValue("input");
-			
-			if (input == null)
-				return;
-
-			if (!AlreadyLogged.Contains(condition))
-			{
-				switch (type)
-				{
-					case LogType.Log:
-						Console.ForegroundColor = ConsoleColor.Gray;
-						break;
-					case LogType.Warning:
-						Console.ForegroundColor = ConsoleColor.Yellow;
-						break;
-					case LogType.Error:
-					case LogType.Exception:
-					case LogType.Assert:
-						Console.ForegroundColor = ConsoleColor.Red;
-						break;
-				}
-				input.ClearLine(input.statusText.Length);
-				Console.WriteLine(condition);
-				input.RedrawInputLine();
-				AlreadyLogged.Add(condition);
-			}
-		}
 	}
 }
 
