@@ -343,7 +343,7 @@
         {
             if (timer != null) {
             	timer.Kill();
-            	Timers.Remove(name);
+            	Timers.Remove(timer.Name);
             }
         }
 
