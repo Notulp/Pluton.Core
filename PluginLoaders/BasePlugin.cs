@@ -341,7 +341,7 @@
 
         public void KillTimer(TimedEvent timer)
         {
-            if (timer) {
+            if (timer != null) {
             	timer.Kill();
             	Timers.Remove(name);
             }
@@ -397,7 +397,7 @@
 
         public void KillParallelTimer(TimedEvent timer)
         {
-            if (timer) {
+            if (timer != null) {
             	timer.Kill();
                 ParallelTimers.Remove(timer);
             }
