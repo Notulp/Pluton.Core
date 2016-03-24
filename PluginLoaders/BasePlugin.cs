@@ -336,11 +336,15 @@
         public void KillTimer(string name)
         {
             TimedEvent timer = GetTimer(name);
-            if (timer == null)
-                return;
+            KillTimer(timer);
+        }
 
-            timer.Kill();
-            Timers.Remove(name);
+        public void KillTimer(TimedEvent timer)
+        {
+            if (timer) {
+            	timer.Kill();
+            	Timers.Remove(name);
+            }
         }
 
         public void KillTimers()
@@ -387,7 +391,14 @@
         public void KillParallelTimer(string name)
         {
             foreach (TimedEvent timer in GetParallelTimer(name)) {
-                timer.Kill();
+                KillParallelTimer(timer);
+            }
+        }
+
+        public void KillParallelTimer(TimedEvent timer)
+        {
+            if (timer) {
+            	timer.Kill();
                 ParallelTimers.Remove(timer);
             }
         }
