@@ -21,7 +21,7 @@
 					if (!file.EndsWith ("Pluton.Core.dll")) {
 						System.Reflection.Assembly module = System.Reflection.Assembly.LoadFile (file);
 						foreach (var type in module.GetTypes()) {
-							if (type.ToString() == file.Split('\\').Last().Replace("dll", "Bootstrap")) {
+							if (type.ToString() == file.Split(Path.DirectorySeparatorChar).Last().Replace("dll", "Bootstrap")) {
 								module.CreateInstance(type.ToString());
 							}
 						}
