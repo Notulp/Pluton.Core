@@ -17,7 +17,7 @@
 		public static void AttachBootstrap()
 		{
 			try {
-				foreach (var file in Directory.GetFiles(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace("file:///", "").Replace("/", "\\").Replace("\\Pluton.Core.dll", ""), "Pluton.*.dll")) {
+				foreach (var file in Directory.GetFiles(System.Reflection.Assembly.GetExecutingAssembly().Location.Replace(Path.DirectorySeparatorChar + "Pluton.Core.dll", ""), "Pluton.*.dll")) {
 					if (!file.EndsWith ("Pluton.Core.dll")) {
 						System.Reflection.Assembly module = System.Reflection.Assembly.LoadFile (file);
 						foreach (var type in module.GetTypes()) {
