@@ -1,11 +1,14 @@
-﻿namespace Pluton.Core {
+﻿namespace Pluton.Core
+{
 	using System;
 	using System.IO;
 	using UnityEngine;
 	using System.Collections.Generic;
 
-	public static class Logger {
-		struct Writer {
+	public static class Logger
+	{
+		struct Writer
+		{
 			public StreamWriter LogWriter;
 			public string DateTime;
 		}
@@ -28,7 +31,8 @@
 
 		static bool Initialized = false;
 
-		public static void Init() {
+		public static void Init()
+		{
 			try {
 				logChat = Config.GetInstance().GetBoolValue("Logging", "chatInLog", true);
 				logDebug = Config.GetInstance().GetBoolValue("Logging", "debugInLog", true);
@@ -63,7 +67,8 @@
 			}
 		}
 
-		static void LogWriterInit() {
+		static void LogWriterInit()
+		{
 			try {
 				if (LogWriter.LogWriter != null)
 					LogWriter.LogWriter.Close();
@@ -76,37 +81,40 @@
 			}
 		}
 
-		static void WarnWriterInit() {
+		static void WarnWriterInit()
+		{
 			try {
 				if (WarnWriter.LogWriter != null)
 					WarnWriter.LogWriter.Close();
 
 				WarnWriter.DateTime = DateTime.Now.ToString("dd_MM_yyyy");
 				WarnWriter.LogWriter = new StreamWriter(Path.Combine(LogsFolder, $"Warning {WarnWriter.DateTime}.txt"), true);
-				                                        
-				                                        
+
+
 				WarnWriter.LogWriter.AutoFlush = true;
 			} catch (Exception ex) {
 				Debug.LogException(ex);
 			}
 		}
 
-		static void ErrorWriterInit() {
+		static void ErrorWriterInit()
+		{
 			try {
 				if (ErrorWriter.LogWriter != null)
 					ErrorWriter.LogWriter.Close();
 
 				ErrorWriter.DateTime = DateTime.Now.ToString("dd_MM_yyyy");
 				ErrorWriter.LogWriter = new StreamWriter(Path.Combine(LogsFolder, $"Error {ErrorWriter.DateTime}.txt"), true);
-				                                         
-				                                         
+
+
 				ErrorWriter.LogWriter.AutoFlush = true;
 			} catch (Exception ex) {
 				Debug.LogException(ex);
 			}
 		}
 
-		static void ChatWriterInit() {
+		static void ChatWriterInit()
+		{
 			try {
 				if (ChatWriter.LogWriter != null)
 					ChatWriter.LogWriter.Close();
@@ -119,44 +127,49 @@
 			}
 		}
 
-		static string LogFormat(string Text) {
+		static string LogFormat(string Text)
+		{
 			return $"[{DateTime.Now}] {Text}";
 		}
 
-		static void WriteLog(string Message) {
+		static void WriteLog(string Message)
+		{
 			try {
 				if (LogWriter.DateTime != DateTime.Now.ToString("dd_MM_yyyy"))
 					LogWriterInit();
-				
+
 				LogWriter.LogWriter.WriteLine(LogFormat(Message));
 			} catch (Exception ex) {
 				Debug.LogException(ex);
 			}
 		}
 
-		static void WriteWarn(string Message) {
+		static void WriteWarn(string Message)
+		{
 			try {
 				if (WarnWriter.DateTime != DateTime.Now.ToString("dd_MM_yyyy"))
 					WarnWriterInit();
-				
+
 				WarnWriter.LogWriter.WriteLine(LogFormat(Message));
 			} catch (Exception ex) {
 				Debug.LogException(ex);
 			}
 		}
 
-		static void WriteError(string Message) {
+		static void WriteError(string Message)
+		{
 			try {
 				if (ErrorWriter.DateTime != DateTime.Now.ToString("dd_MM_yyyy"))
 					ErrorWriterInit();
-				
+
 				ErrorWriter.LogWriter.WriteLine(LogFormat(Message));
 			} catch (Exception ex) {
 				Debug.LogException(ex);
 			}
 		}
 
-		static void WriteChat(string Message) {
+		static void WriteChat(string Message)
+		{
 			try {
 				if (ChatWriter.DateTime != DateTime.Now.ToString("dd_MM_yyyy"))
 					ChatWriterInit();
@@ -167,14 +180,16 @@
 		}
 
 		// verbose?
-		public static void Log(string Message, UnityEngine.Object Context = null) {
+		public static void Log(string Message, UnityEngine.Object Context = null)
+		{
 			Message = "[Console] " + Message;
 			Debug.Log(Message, Context);
 			if (Initialized)
 				WriteLog(Message);
 		}
 
-		public static void LogWarning(string Message, UnityEngine.Object Context = null) {
+		public static void LogWarning(string Message, UnityEngine.Object Context = null)
+		{
 			Message = "[Warning] " + Message;
 			if (showWarnings)
 				Debug.LogWarning(Message, Context);
@@ -185,7 +200,8 @@
 			WriteWarn(Message);
 		}
 
-		public static void LogError(string Message, UnityEngine.Object Context = null) {
+		public static void LogError(string Message, UnityEngine.Object Context = null)
+		{
 			Message = "[Error] " + Message;
 			if (showErrors)
 				Debug.LogError(Message, Context);
@@ -196,19 +212,21 @@
 			WriteError(Message);
 		}
 
-		public static void LogException(Exception Ex, UnityEngine.Object Context = null) {
+		public static void LogException(Exception Ex, UnityEngine.Object Context = null)
+		{
 			if (showException)
 				Debug.LogException(Ex, Context);
-			
+
 			if (!logException || !Initialized)
 				return;
-			
+
 			string Message = "[Exception]\r\n\r\n" + (Ex == null ? "(null) exception" : Ex.ToString()) + "\r\n";
-			
+
 			WriteError(Message);
 		}
 
-		public static void LogDebug(string Message, UnityEngine.Object Context = null) {
+		public static void LogDebug(string Message, UnityEngine.Object Context = null)
+		{
 			Message = "[Debug] " + Message;
 			if (showDebug)
 				Debug.Log(Message, Context);
@@ -219,7 +237,8 @@
 			WriteLog(Message);
 		}
 
-		public static void ChatLog(string Sender, string Msg) {
+		public static void ChatLog(string Sender, string Msg)
+		{
 			Msg = "[CHAT] " + Sender + ": " + Msg;
 			if (showChat)
 				Debug.Log(Msg);

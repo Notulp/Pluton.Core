@@ -1,25 +1,31 @@
-﻿namespace Pluton.Core {
+﻿namespace Pluton.Core
+{
 	using System;
 	using System.Collections.Generic;
 
 	[Serializable]
-	public class CountedInstance {
+	public class CountedInstance
+	{
 		[NonSerialized]
 		public static Dictionary<Type, CountedInstance.Counts> InstanceTypes = new Dictionary<Type, CountedInstance.Counts>();
 
-		~CountedInstance() {
+		~CountedInstance()
+		{
 			CountedInstance.RemoveCount(base.GetType());
 		}
 
-		public CountedInstance() {
+		public CountedInstance()
+		{
 			CountedInstance.AddCount(base.GetType());
 		}
 
-		static CountedInstance() {
+		static CountedInstance()
+		{
 			CountedInstance.InstanceTypes = new Dictionary<Type, CountedInstance.Counts>();
 		}
 
-		internal static void AddCount(Type type) {
+		internal static void AddCount(Type type)
+		{
 			CountedInstance.Counts counts;
 			if (CountedInstance.InstanceTypes.TryGetValue(type, out counts)) {
 				counts.Created++;
@@ -28,14 +34,16 @@
 			CountedInstance.InstanceTypes.Add(type, new CountedInstance.Counts());
 		}
 
-		internal static void RemoveCount(Type type) {
+		internal static void RemoveCount(Type type)
+		{
 			CountedInstance.Counts counts;
 			if (CountedInstance.InstanceTypes.TryGetValue(type, out counts)) {
 				counts.Destroyed++;
 			}
 		}
 
-		public static string InstanceReportText() {
+		public static string InstanceReportText()
+		{
 			string text = "";
 			foreach (KeyValuePair<Type, CountedInstance.Counts> current in CountedInstance.InstanceTypes) {
 				object obj = text;
@@ -53,7 +61,8 @@
 		}
 
 		[Serializable]
-		public class Counts {
+		public class Counts
+		{
 			public int Created = 1;
 			public int Destroyed;
 		}

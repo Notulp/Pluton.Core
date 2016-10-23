@@ -1,11 +1,14 @@
-﻿namespace Pluton.Core {
+﻿namespace Pluton.Core
+{
 	using System.IO;
 	using UnityEngine;
 
-	public class DirectoryConfig : Singleton<DirectoryConfig>, ISingleton {
+	public class DirectoryConfig : Singleton<DirectoryConfig>, ISingleton
+	{
 		IniParser DirConfig;
 
-		public void Initialize() {
+		public void Initialize()
+		{
 			string ConfigPath = Path.Combine(Util.GetInstance().GetServerFolder(), "DirectoryConfig.cfg");
 
 			if (File.Exists(ConfigPath)) {
@@ -25,7 +28,8 @@
 			}
 		}
 
-		public string GetConfigPath(string config) {
+		public string GetConfigPath(string config)
+		{
 			string path = DirConfig.GetSetting("Directories", config);
 
 			if (path.StartsWith("%public%"))
@@ -36,11 +40,12 @@
 
 			if (path.StartsWith("%root%"))
 				path = path.Replace("%root%", Util.GetInstance().GetRootFolder());
-			
+
 			return path;
 		}
 
-		public void Reload() {
+		public void Reload()
+		{
 			string ConfigPath = Path.Combine(Util.GetInstance().GetServerFolder(), "DirectoryConfig.cfg");
 
 			if (File.Exists(ConfigPath))

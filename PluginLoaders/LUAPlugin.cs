@@ -1,26 +1,31 @@
-﻿namespace Pluton.Core.PluginLoaders {
+﻿namespace Pluton.Core.PluginLoaders
+{
 	using System;
 	using System.IO;
 	using MoonSharp.Interpreter;
 	using MoonSharp.Interpreter.Interop;
 
-	public class LUAPlugin : BasePlugin {
+	public class LUAPlugin : BasePlugin
+	{
 		public Table Tables;
 		public Script script;
 
 		public LUAPlugin(string name)
-			: base(name) {
+			: base(name)
+		{
 			string code = File.ReadAllText(GetPluginPath());
 
 			System.Threading.ThreadPool.QueueUserWorkItem(
 				new System.Threading.WaitCallback(a => Load(code)), null);
 		}
 
-		public override object GetGlobalObject(string id) {
+		public override object GetGlobalObject(string id)
+		{
 			return script.Globals.Get(id).ToObject();
 		}
 
-		public override object Invoke(string method, params object[] args) {
+		public override object Invoke(string method, params object[] args)
+		{
 			try {
 				if (State == PluginState.Loaded && Globals.Contains(method)) {
 					object result = null;
@@ -40,12 +45,14 @@
 			}
 		}
 
-		public override string FormatException(Exception ex) {
+		public override string FormatException(Exception ex)
+		{
 			return base.FormatException(ex) +
 			(ex is ScriptRuntimeException ? Environment.NewLine + (ex as ScriptRuntimeException).DecoratedMessage : "");
 		}
 
-		public override void Load(string code = "") {
+		public override void Load(string code = "")
+		{
 			try {
 				if (CoreConfig.GetInstance().GetBoolValue("lua", "checkHash") && !code.VerifyMD5Hash()) {
 					Logger.LogDebug($"[{GetType().Name}] MD5Hash not found for: {Name}");

@@ -1,4 +1,5 @@
-﻿namespace Pluton.Core {
+﻿namespace Pluton.Core
+{
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
@@ -6,16 +7,19 @@
 	using System.Reflection;
 	using System.Text;
 
-	public class DumpSettings {
+	public class DumpSettings
+	{
 		public int MaxItems = 30;
 		public bool DisplayPrivate = false;
 		public int MaxDepth = 3;
 		public bool UseFullClassNames = false;
 
-		public DumpSettings() {
+		public DumpSettings()
+		{
 		}
 
-		public DumpSettings(int maxItem, int maxDepth, bool disPrivate, bool useFullClassName) {
+		public DumpSettings(int maxItem, int maxDepth, bool disPrivate, bool useFullClassName)
+		{
 			MaxItems = maxItem;
 			MaxDepth = maxDepth;
 			DisplayPrivate = disPrivate;
@@ -23,34 +27,42 @@
 		}
 	}
 
-	public class Dump {
+	public class Dump
+	{
 		#region Constructors
 
 		public Dump(object obj)
-			: this(obj, null, null, 0) {
+			: this(obj, null, null, 0)
+		{
 		}
 
 		public Dump(object obj, Type type)
-			: this(obj, type, null, 0) {
+			: this(obj, type, null, 0)
+		{
 		}
 
 		public Dump(object obj, DumpSettings settings)
-			: this(obj, null, null, 0, settings) {
+			: this(obj, null, null, 0, settings)
+		{
 		}
 
 		public Dump(object obj, Type type, string name)
-			: this(obj, type, name, 0) {
+			: this(obj, type, name, 0)
+		{
 		}
 
 		public Dump(object obj, Type type, string name, int level)
-			: this(obj, type, name, level, s_defaultSettings) {
+			: this(obj, type, name, level, s_defaultSettings)
+		{
 		}
 
 		public Dump(object obj, Type type, DumpSettings settings)
-			: this(obj, type, null, 0, settings) {
+			: this(obj, type, null, 0, settings)
+		{
 		}
 
-		public Dump(object obj, Type type, string name, int level, DumpSettings settings) {
+		public Dump(object obj, Type type, string name, int level, DumpSettings settings)
+		{
 			_object = obj;
 			_type = type;
 			if (_type == null)
@@ -65,7 +77,8 @@
 
 		#endregion
 
-		public override string ToString() {
+		public override string ToString()
+		{
 			try {
 				_out.Length = 0;
 				process2(_name, _type, _object, _level);
@@ -77,39 +90,48 @@
 
 		#region ToDump static methods
 
-		public static string ToDump<T>(T obj) {
+		public static string ToDump<T>(T obj)
+		{
 			return ToDump<T>(obj, null, null);
 		}
 
-		public static string ToDump<T>(T obj, DumpSettings settings) {
+		public static string ToDump<T>(T obj, DumpSettings settings)
+		{
 			return ToDump<T>(obj, null, settings);
 		}
 
-		public static string ToDump<T>(T obj, string name) {
+		public static string ToDump<T>(T obj, string name)
+		{
 			return ToDump(obj, name, null);
 		}
 
-		public static string ToDump<T>(T obj, string name, DumpSettings settings) {
+		public static string ToDump<T>(T obj, string name, DumpSettings settings)
+		{
 			return ToDump(obj, (obj == null) ? typeof(T) : obj.GetType(), name, settings);
 		}
 
-		public static string ToDump(object obj, Type type) {
+		public static string ToDump(object obj, Type type)
+		{
 			return ToDump(obj, type, string.Empty);
 		}
 
-		public static string ToDump(object obj, Type type, string name) {
+		public static string ToDump(object obj, Type type, string name)
+		{
 			return new Dump(obj, type, name, 0).ToString();
 		}
 
-		public static string ToDump(object obj, Type type, string name, DumpSettings settings) {
+		public static string ToDump(object obj, Type type, string name, DumpSettings settings)
+		{
 			return new Dump(obj, type, name, 0, settings).ToString();
 		}
 
-		public static string ToDump(object obj, Type type, string name, int level) {
+		public static string ToDump(object obj, Type type, string name, int level)
+		{
 			return new Dump(obj, type, name, level).ToString();
 		}
 
-		public static string ToDump(object obj, Type type, string name, int level, DumpSettings settings) {
+		public static string ToDump(object obj, Type type, string name, int level, DumpSettings settings)
+		{
 			return new Dump(obj, type, name, level, settings).ToString();
 		}
 
@@ -117,11 +139,13 @@
 
 		#region Public static utility methods
 
-		static public string GetFriendlyTypeName(Type type) {
+		static public string GetFriendlyTypeName(Type type)
+		{
 			return GetFriendlyTypeName(type, false);
 		}
 
-		static public string GetFriendlyTypeName(Type type, bool fullName) {
+		static public string GetFriendlyTypeName(Type type, bool fullName)
+		{
 			if (type == null)
 				throw new ArgumentNullException("type");
 
@@ -164,25 +188,30 @@
 
 		#region Static configuration methods
 
-		public static void AddBloatType(Type exc) {
+		public static void AddBloatType(Type exc)
+		{
 			lock (s_bloatTypes)
 				s_bloatTypes[exc.FullName] = true;
 		}
 
-		public static void AddBloatType(string typename) {
+		public static void AddBloatType(string typename)
+		{
 			lock (s_bloatTypes)
 				s_bloatTypes.Add(typename, true);
 		}
 
-		public static void AddBloatProperty(Type type, string propertyName) {
+		public static void AddBloatProperty(Type type, string propertyName)
+		{
 			addProperty(type, propertyName, false);
 		}
 
-		public static void AddHiddenProperty(Type type, string propertyName) {
+		public static void AddHiddenProperty(Type type, string propertyName)
+		{
 			addProperty(type, propertyName, true);
 		}
 
-		public static void AddTypeName(Type type, string typename) {
+		public static void AddTypeName(Type type, string typename)
+		{
 			lock (s_bloatTypes)
 				s_friendlyName.Add(type, typename);
 		}
@@ -199,7 +228,8 @@
 		private static readonly DumpSettings s_defaultSettings = new DumpSettings();
 
 
-		private static void addProperty(Type type, string propertyName, bool sideEffect) {
+		private static void addProperty(Type type, string propertyName, bool sideEffect)
+		{
 			lock (s_propertyHints) {
 				Dictionary<string, bool> prop;
 				if (!s_propertyHints.TryGetValue(type, out prop)) {
@@ -210,12 +240,15 @@
 			}
 		}
 
-		private class ReferenceComparer : IEqualityComparer<object> {
-			bool IEqualityComparer<object>.Equals(object x, object y) {
+		private class ReferenceComparer : IEqualityComparer<object>
+		{
+			bool IEqualityComparer<object>.Equals(object x, object y)
+			{
 				return ReferenceEquals(x, y);
 			}
 
-			int IEqualityComparer<object>.GetHashCode(object obj) {
+			int IEqualityComparer<object>.GetHashCode(object obj)
+			{
 				if (ReferenceEquals(obj, null))
 					return 0;
 				return obj.GetHashCode();
@@ -228,7 +261,8 @@
 		private static readonly Dictionary<Type, Dictionary<string, bool>> s_propertyHints = initPropertyHints();
 		private static readonly Dictionary<Type, string> s_friendlyName = initFriendlyNames();
 
-		private static Dictionary<string, bool> initBloatTypes() {
+		private static Dictionary<string, bool> initBloatTypes()
+		{
 			Dictionary<string, bool> ret = new Dictionary<string, bool>();
 			foreach (string s in new string[] {"System.DateTime",
 				"System.Type",
@@ -248,7 +282,8 @@
 			return ret;
 		}
 
-		private static Dictionary<Type, string> initFriendlyNames() {
+		private static Dictionary<Type, string> initFriendlyNames()
+		{
 			Dictionary<Type, string> r = new Dictionary<Type, string>();
 			r.Add(typeof(string), "string");
 			r.Add(typeof(int), "int");
@@ -266,7 +301,8 @@
 			return r;
 		}
 
-		private static Dictionary<Type, Dictionary<string, bool>> initPropertyHints() {
+		private static Dictionary<Type, Dictionary<string, bool>> initPropertyHints()
+		{
 			Dictionary<Type, Dictionary<string, bool>> s = new Dictionary<Type, Dictionary<string, bool>>();
 
 			// FileSystemInfo Parent and Root properties are examples of "bloat" properties and should be dumped with ToString
@@ -281,7 +317,8 @@
 		readonly Dictionary<object, int> _usedMap = new Dictionary<object, int>(new ReferenceComparer());
 		private int _counter = 0;
 
-		void process2(string name, Type t, object o, int depth) {
+		void process2(string name, Type t, object o, int depth)
+		{
 
 			string typeName = GetFriendlyTypeName(t, _settings.UseFullClassNames);
 
@@ -316,18 +353,18 @@
 
 			if (t.IsPrimitive || t.IsEnum || (t.IsValueType && props.Length == 0 && fi.Length == 0) || s_bloatTypes.ContainsKey(t.FullName) || t == typeof(decimal)) {
 				if ((t == typeof(int)) || (t == typeof(byte)) || (t == typeof(uint)) || t == typeof(long) ||
-				    t == typeof(ulong))
+					t == typeof(ulong))
 					_out.AppendFormat(" {0} (0x{0:x})", o);
 				else if (t == typeof(DateTime) || t == typeof(DateTime?))
-						_out.AppendFormat("{0:o} ({1})", o, ((DateTime)o).Kind);
-					else if (t == typeof(Guid))
-							_out.Append(((Guid)o).ToString("B"));
-						else if (t == typeof(bool))
-								_out.Append(((bool)o) ? "true" : "false");
-							else if (t.IsEnum)
-									_out.AppendFormat("[{0}]", o);
-								else
-									_out.AppendFormat("[{0}]", toEscapedString(o));
+					_out.AppendFormat("{0:o} ({1})", o, ((DateTime)o).Kind);
+				else if (t == typeof(Guid))
+					_out.Append(((Guid)o).ToString("B"));
+				else if (t == typeof(bool))
+					_out.Append(((bool)o) ? "true" : "false");
+				else if (t.IsEnum)
+					_out.AppendFormat("[{0}]", o);
+				else
+					_out.AppendFormat("[{0}]", toEscapedString(o));
 				return;
 			}
 			if (t.IsClass) {
@@ -346,49 +383,52 @@
 					arr = t.GetMethod("ToArray").Invoke(o, new object[] { }) as Array;
 				processArray(t, arr, depth);
 			} else if (o as IEnumerable != null) {
-					writeBrace(o);
-					processEnumerables(o as IEnumerable, depth);
-				} else {
-					writeBrace(o);
+				writeBrace(o);
+				processEnumerables(o as IEnumerable, depth);
+			} else {
+				writeBrace(o);
 
-					Dictionary<string, bool> propNames = null;
-					foreach (KeyValuePair<Type, Dictionary<string, bool>> info in s_propertyHints)
-						if (t == info.Key || t.IsSubclassOf(info.Key)) {
-							propNames = info.Value;
-							break;
-						}
-
-					foreach (PropertyInfo p in props) {
-						bool sideEffect;
-						if (propNames != null && propNames.TryGetValue(p.Name, out sideEffect)) {
-							if (!sideEffect)
-								dumpProperty(p, o, depth + 1, true);
-							else {
-								process2(p.Name, p.PropertyType, "<ignored>", depth + 1);
-								_out.AppendLine();
-							}
-						} else
-							dumpProperty(p, o, depth + 1, false);
+				Dictionary<string, bool> propNames = null;
+				foreach (KeyValuePair<Type, Dictionary<string, bool>> info in s_propertyHints)
+					if (t == info.Key || t.IsSubclassOf(info.Key)) {
+						propNames = info.Value;
+						break;
 					}
-					foreach (FieldInfo f in fi)
-						dumpField(f, o, depth + 1);
 
+				foreach (PropertyInfo p in props) {
+					bool sideEffect;
+					if (propNames != null && propNames.TryGetValue(p.Name, out sideEffect)) {
+						if (!sideEffect)
+							dumpProperty(p, o, depth + 1, true);
+						else {
+							process2(p.Name, p.PropertyType, "<ignored>", depth + 1);
+							_out.AppendLine();
+						}
+					} else
+						dumpProperty(p, o, depth + 1, false);
 				}
+				foreach (FieldInfo f in fi)
+					dumpField(f, o, depth + 1);
+
+			}
 			_out.Append(new string(' ', depth * 2));
 			_out.Append("}");
 
 		}
 
-		private static string toEscapedString(object o) {
+		private static string toEscapedString(object o)
+		{
 			return o.ToString().Replace("\r", "\\r").Replace("\n", "\\n").Replace("\b", "\\b").Replace("\t", "\\t");
 		}
 
-		private void writeBrace(object o) {
+		private void writeBrace(object o)
+		{
 			_out.Append("{");
 			_out.AppendLine();
 		}
 
-		private void dumpProperty(PropertyInfo p, object o, int level, bool asString) {
+		private void dumpProperty(PropertyInfo p, object o, int level, bool asString)
+		{
 			try {
 				if (p.GetIndexParameters().Length == 0) {
 					object obj = p.GetValue(o, null);
@@ -409,7 +449,8 @@
 			}
 		}
 
-		private void dumpField(FieldInfo p, object o, int level) {
+		private void dumpField(FieldInfo p, object o, int level)
+		{
 			try {
 				object obj = p.GetValue(o);
 				process2(p.Name, (obj == null) ? p.FieldType : obj.GetType(), obj, level);
@@ -423,7 +464,8 @@
 		}
 
 
-		private void processEnumerables(IEnumerable enumerable, int nLevel) {
+		private void processEnumerables(IEnumerable enumerable, int nLevel)
+		{
 			int index = 0;
 			foreach (object info in enumerable) {
 				Type tinside = info == null ? typeof(object) : info.GetType();
@@ -436,7 +478,8 @@
 			}
 		}
 
-		private void processArray(Type t, Array arr, int nLevel) {
+		private void processArray(Type t, Array arr, int nLevel)
+		{
 			Type tInside = t.GetElementType();
 			if (tInside == typeof(byte)) {
 				byte[] b = (byte[])arr;

@@ -1,4 +1,5 @@
-﻿namespace Pluton.Core.PluginLoaders {
+﻿namespace Pluton.Core.PluginLoaders
+{
 	using System;
 	using System.IO;
 	using System.Reflection;
@@ -6,7 +7,8 @@
 	using System.Diagnostics;
 	using System.Collections.Generic;
 
-	public class CSSPlugin : BasePlugin {
+	public class CSSPlugin : BasePlugin
+	{
 		public CSharpPlugin Engine;
 
 		const string compileParams = "/langversion:6 /target:library /debug- /optimize+ /out:%PLUGINPATH%%PLUGINNAME%.plugin %REFERENCES% %PLUGINPATH%*.cs";
@@ -17,21 +19,24 @@
 		public bool Compiled = false;
 
 		public CSSPlugin(string name)
-			: base(name) {
+			: base(name)
+		{
 			CompilePluginParams = compileParams.Replace("%PLUGINPATH%", RootDir.FullName + Path.DirectorySeparatorChar).Replace("%PLUGINNAME%",
-			                                                                                                                    name).Replace("%REFERENCES%",
-			                                                                                                                                                  String.Join(" ",
-			                                                                                                                                                                              GetDllPaths().ToArray()));
+																																name).Replace("%REFERENCES%",
+																																							  String.Join(" ",
+																																														  GetDllPaths().ToArray()));
 
 			System.Threading.ThreadPool.QueueUserWorkItem(
 				new System.Threading.WaitCallback(a => Load(null)), null);
 		}
 
-		public override object GetGlobalObject(string id) {
+		public override object GetGlobalObject(string id)
+		{
 			return Engine.GetFieldValue(id);
 		}
 
-		public override object Invoke(string method, params object[] args) {
+		public override object Invoke(string method, params object[] args)
+		{
 			try {
 				if (State == PluginState.Loaded && Globals.Contains(method)) {
 					object result = null;
@@ -57,7 +62,8 @@
 			}
 		}
 
-		public override void Load(string nothing) {
+		public override void Load(string nothing)
+		{
 			try {
 				LoadReferences();
 
@@ -83,7 +89,7 @@
 						Engine.Plugin = this;
 
 						Globals = (from method in classType.GetMethods()
-						           select method.Name).ToList();
+								   select method.Name).ToList();
 
 						State = PluginState.Loaded;
 					}
@@ -96,10 +102,11 @@
 			PluginLoader.GetInstance().OnPluginLoaded(this);
 		}
 
-		public Assembly Compile() {
+		public Assembly Compile()
+		{
 			try {
 				string mcspath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-				                                          "mcs.exe");
+														  "mcs.exe");
 
 				using (new Stopper("CSSPlugin", "Compile()")) {
 
@@ -160,7 +167,8 @@
 			}
 		}
 
-		void MCSReturnedOutputData(object sender, DataReceivedEventArgs e) {
+		void MCSReturnedOutputData(object sender, DataReceivedEventArgs e)
+		{
 			if (e.Data != null) {
 				mutex.WaitOne();
 				CompilationResults += e.Data + Environment.NewLine;
@@ -168,11 +176,13 @@
 			}
 		}
 
-		void MCSExited(object sender, EventArgs e) {
+		void MCSExited(object sender, EventArgs e)
+		{
 			Compiled = true;
 		}
 
-		void MCSReturnedErrorData(object sender, DataReceivedEventArgs e) {
+		void MCSReturnedErrorData(object sender, DataReceivedEventArgs e)
+		{
 			if (e.Data != null) {
 				mutex.WaitOne();
 				CompilationResults += e.Data + Environment.NewLine;
@@ -180,7 +190,8 @@
 			}
 		}
 
-		IEnumerable<string> GetDllPaths() {
+		IEnumerable<string> GetDllPaths()
+		{
 			string refpath = Path.Combine(RootDir.FullName, "References");
 			if (Directory.Exists(refpath)) {
 				var refdir = new DirectoryInfo(refpath);
@@ -198,7 +209,8 @@
 			}
 		}
 
-		public void LoadReferences() {
+		public void LoadReferences()
+		{
 			List<string> dllpaths = GetRefDllPaths().ToList();
 			foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies()) {
 				if (dllpaths.Contains(ass.FullName)) {
@@ -210,7 +222,8 @@
 			});
 		}
 
-		IEnumerable<string> GetRefDllPaths() {
+		IEnumerable<string> GetRefDllPaths()
+		{
 			string refpath = Path.Combine(RootDir.FullName, "References");
 			if (Directory.Exists(refpath)) {
 				var refdir = new DirectoryInfo(refpath);

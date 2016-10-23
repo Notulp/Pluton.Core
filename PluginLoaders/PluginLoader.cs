@@ -1,4 +1,5 @@
-﻿namespace Pluton.Core.PluginLoaders {
+﻿namespace Pluton.Core.PluginLoaders
+{
 	using System;
 	using System.Collections.Generic;
 	using System.Collections.Concurrent;
@@ -6,7 +7,8 @@
 	using System.Linq;
 	using System.Reactive.Subjects;
 
-	public class PluginLoader : Singleton<PluginLoader>, ISingleton {
+	public class PluginLoader : Singleton<PluginLoader>, ISingleton
+	{
 		public List<BasePlugin> CurrentlyLoadingPlugins = new List<BasePlugin>();
 
 		public ConcurrentDictionary<string, BasePlugin> Plugins = new ConcurrentDictionary<string, BasePlugin>();
@@ -17,7 +19,8 @@
 
 		public Subject<string> OnAllLoaded = new Subject<string>();
 
-		public void Initialize() {
+		public void Initialize()
+		{
 			PYPlugin.LibPath = Path.Combine(Util.GetInstance().GetPublicFolder(), Path.Combine("Python", "Lib"));
 			BasePlugin.GlobalData = new Dictionary<string, object>();
 			pluginDirectory = new DirectoryInfo(Util.GetInstance().GetPluginsFolder());
@@ -28,15 +31,16 @@
 
 		#region re/un/loadplugin(s)
 
-		public void OnPluginLoaded(BasePlugin plugin) {
+		public void OnPluginLoaded(BasePlugin plugin)
+		{
 			var pluginType = plugin.GetType();
 
 			Instance.CurrentlyLoadingPlugins.RemoveAll(p => p.Name == plugin.Name);
 
 			if (plugin.State != PluginState.Loaded) {
-				throw new FileLoadException("Couldn't initialize " + pluginType.Name + " plugin.", 
-				                            Path.Combine(plugin.RootDir.FullName,
-				                                         plugin.Name + PluginLoaderHelper.GetExtension(pluginType))
+				throw new FileLoadException("Couldn't initialize " + pluginType.Name + " plugin.",
+											Path.Combine(plugin.RootDir.FullName,
+														 plugin.Name + PluginLoaderHelper.GetExtension(pluginType))
 				);
 			}
 
@@ -51,33 +55,39 @@
 			Logger.Log($"[PluginLoader] {pluginType.Name}<{plugin.Name}> plugin was loaded successfuly.");
 		}
 
-		public void LoadPlugin(string name, PluginType t) {
+		public void LoadPlugin(string name, PluginType t)
+		{
 			PluginLoaders[t.Type].CallMethod("LoadPlugin", name);
 		}
 
-		public void LoadPlugins() {
+		public void LoadPlugins()
+		{
 			foreach (IPluginLoader loader in PluginLoaders.Values.ToArray())
 				loader.LoadPlugins();
 		}
 
-		public void UnloadPlugins() {
+		public void UnloadPlugins()
+		{
 			foreach (IPluginLoader loader in PluginLoaders.Values.ToArray())
 				loader.UnloadPlugins();
 		}
 
-		public void ReloadPlugins() {
+		public void ReloadPlugins()
+		{
 			foreach (IPluginLoader loader in PluginLoaders.Values.ToArray())
 				loader.ReloadPlugins();
 		}
 
-		public void ReloadPlugin(string name) {
+		public void ReloadPlugin(string name)
+		{
 			IPluginLoader pluginloader;
 
 			if (Plugins.ContainsKey(name) && PluginLoaders.TryGetValue(Plugins[name].GetType(), out pluginloader))
 				pluginloader?.ReloadPlugin(name);
 		}
 
-		public void ReloadPlugin(BasePlugin plugin) {
+		public void ReloadPlugin(BasePlugin plugin)
+		{
 			string name = plugin.Name;
 			IPluginLoader pluginloader;
 
@@ -89,7 +99,8 @@
 
 		#region install/remove hooks
 
-		public void InstallHooks(BasePlugin plugin) {
+		public void InstallHooks(BasePlugin plugin)
+		{
 			if (plugin.State != PluginState.Loaded)
 				return;
 
@@ -106,7 +117,8 @@
 				plugin.Invoke("On_PluginInit");
 		}
 
-		public void RemoveHooks(BasePlugin plugin) {
+		public void RemoveHooks(BasePlugin plugin)
+		{
 			if (plugin.State != PluginState.Loaded)
 				return;
 

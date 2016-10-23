@@ -1,7 +1,9 @@
-﻿namespace Pluton.Core.PluginLoaders {
+﻿namespace Pluton.Core.PluginLoaders
+{
 	using System.Collections.Generic;
 
-	public interface IPluginLoader {
+	public interface IPluginLoader
+	{
 		string GetExtension();
 
 		IEnumerable<string> GetPluginNames();

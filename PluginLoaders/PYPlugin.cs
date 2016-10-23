@@ -1,9 +1,11 @@
-﻿namespace Pluton.Core.PluginLoaders {
+﻿namespace Pluton.Core.PluginLoaders
+{
 	using System;
 	using System.IO;
 	using Microsoft.Scripting.Hosting;
 
-	public class PYPlugin : BasePlugin {
+	public class PYPlugin : BasePlugin
+	{
 		public static string LibPath;
 
 		ScriptEngine Engine;
@@ -11,7 +13,8 @@
 		object Class;
 
 		public PYPlugin(string name)
-			: base(name) {
+			: base(name)
+		{
 			string code = File.ReadAllText(GetPluginPath());
 
 			if (CoreConfig.GetInstance().GetBoolValue("python", "checkHash") && !code.VerifyMD5Hash()) {
@@ -26,7 +29,8 @@
 
 		public override string FormatException(Exception ex) => base.FormatException(ex) + Environment.NewLine + Engine.GetService<ExceptionOperations>().FormatException(ex);
 
-		public override object Invoke(string method, params object[] args) {
+		public override object Invoke(string method, params object[] args)
+		{
 			try {
 				if (State == PluginState.Loaded && Globals.Contains(method)) {
 					object result = null;
@@ -45,7 +49,8 @@
 			}
 		}
 
-		public override void Load(string code) {
+		public override void Load(string code)
+		{
 			try {
 				Engine = IronPython.Hosting.Python.CreateEngine();
 				Scope = Engine.CreateScope();
@@ -77,7 +82,8 @@
 			PluginLoader.GetInstance().OnPluginLoaded(this);
 		}
 
-		public override object GetGlobalObject(string id) {
+		public override object GetGlobalObject(string id)
+		{
 			try {
 				return Scope.GetVariable(id);
 			} catch {

@@ -1,24 +1,29 @@
-﻿namespace Pluton.Core.PluginLoaders {
+﻿namespace Pluton.Core.PluginLoaders
+{
 	using System;
 	using System.IO;
 	using System.Reflection;
 	using System.Linq;
 	using System.Collections.Generic;
 
-	public class CSPlugin : BasePlugin {
+	public class CSPlugin : BasePlugin
+	{
 		public CSharpPlugin Engine;
 
 		public CSPlugin(string name)
-			: base(name) {
+			: base(name)
+		{
 			System.Threading.ThreadPool.QueueUserWorkItem(
 				new System.Threading.WaitCallback(a => Load(GetPluginPath())), null);
 		}
 
-		public override object GetGlobalObject(string id) {
+		public override object GetGlobalObject(string id)
+		{
 			return Engine.GetFieldValue(id);
 		}
 
-		public override object Invoke(string method, params object[] args) {
+		public override object Invoke(string method, params object[] args)
+		{
 			try {
 				if (State == PluginState.Loaded && Globals.Contains(method)) {
 					object result = null;
@@ -44,7 +49,8 @@
 			}
 		}
 
-		public override void Load(string code) {
+		public override void Load(string code)
+		{
 			try {
 				byte[] bin = File.ReadAllBytes(code);
 				if (CoreConfig.GetInstance().GetBoolValue("csharp", "checkHash") && !bin.VerifyMD5Hash()) {
@@ -63,7 +69,7 @@
 						Engine.Plugin = this;
 
 						Globals = (from method in classType.GetMethods()
-						           select method.Name).ToList();
+								   select method.Name).ToList();
 
 						State = PluginState.Loaded;
 					}
@@ -76,7 +82,8 @@
 			PluginLoader.GetInstance().OnPluginLoaded(this);
 		}
 
-		public void LoadReferences() {
+		public void LoadReferences()
+		{
 			List<string> dllpaths = GetRefDllPaths().ToList();
 			foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies()) {
 				if (dllpaths.Contains(ass.FullName)) {
@@ -88,7 +95,8 @@
 			});
 		}
 
-		IEnumerable<string> GetRefDllPaths() {
+		IEnumerable<string> GetRefDllPaths()
+		{
 			string refpath = Path.Combine(RootDir.FullName, "References");
 			if (Directory.Exists(refpath)) {
 				var refdir = new DirectoryInfo(refpath);

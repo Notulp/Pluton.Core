@@ -1,9 +1,11 @@
-﻿namespace Pluton.Core.PluginLoaders {
+﻿namespace Pluton.Core.PluginLoaders
+{
 	using System;
 	using System.IO;
 	using PHP.Core;
 
-    public class PHPPlugin : BasePlugin {
+    public class PHPPlugin : BasePlugin
+	{
 		public static new PluginType Type => PluginType.PHP;
 		public static new string Extension => ".php";
 
@@ -13,7 +15,8 @@
         private DirectoryInfo rpath;
 
         public PHPPlugin(string name)
-            : base(name) {
+            : base(name)
+		{
             rpath = rootdir;
 
             if (CoreConfig.GetInstance().GetBoolValue("php", "checkHash") && !code.VerifyMD5Hash()) {
@@ -26,7 +29,8 @@
                 new System.Threading.WaitCallback(a => Load(code)), null);
         }
 
-        public override object Invoke(string func, params object[] args) {
+        public override object Invoke(string func, params object[] args)
+		{
             try {
                 if (State == PluginState.Loaded && Globals.Contains(func)) {
                     object result = (object)null;
@@ -47,7 +51,8 @@
             }
         }
 
-        public override void Load(string code = "") {
+        public override void Load(string code = "")
+		{
             try {
                 context = ScriptContext.CurrentContext;
                 context.Include(rpath  + "\\" + Name + ".php", true);

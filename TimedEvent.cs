@@ -1,9 +1,11 @@
-﻿namespace Pluton.Core {
+﻿namespace Pluton.Core
+{
 	using System;
 	using System.Collections.Generic;
 	using System.Timers;
 
-	public class TimedEvent : CountedInstance {
+	public class TimedEvent : CountedInstance
+	{
 
 		Dictionary<string, object> _args;
 		readonly string _name;
@@ -16,7 +18,8 @@
 
 		public event TimedEventFireDelegate OnFire;
 
-		public TimedEvent(string name, double interval) {
+		public TimedEvent(string name, double interval)
+		{
 			_name = name;
 			_timer = new Timer();
 			_timer.Interval = interval;
@@ -25,14 +28,16 @@
 		}
 
 		public TimedEvent(string name, double interval, Dictionary<string, object> args)
-			: this(name, interval) {
+			: this(name, interval)
+		{
 			_args = args;
 		}
 
-		void _timer_Elapsed(object sender, ElapsedEventArgs e) {
+		void _timer_Elapsed(object sender, ElapsedEventArgs e)
+		{
 			if (OnFire != null)
 				OnFire(this);
-			
+
 			if (_elapsedCount == UInt64.MaxValue) {
 				_elapsedCount = 0;
 				elapsedReachedUInt64Max++;
@@ -44,14 +49,16 @@
 			lastTick = DateTime.UtcNow.Ticks;
 		}
 
-		public void Start() {
+		public void Start()
+		{
 			_timer.Start();
 			lastTick = DateTime.UtcNow.Ticks;
 		}
 
 		public void Stop() => _timer.Stop();
 
-		public void Kill() {
+		public void Kill()
+		{
 			_timer.Stop();
 			_timer.Dispose();
 		}
@@ -72,7 +79,7 @@
 
 		public ulong ElapsedCount => _elapsedCount;
 
-		public string Elapsed => elapsedReachedUInt64Max == 0 ? _elapsedCount.ToString() : elapsedReachedUInt64Max.ToString() + "x" +  UInt64.MaxValue.ToString() + " + " + _elapsedCount;
+		public string Elapsed => elapsedReachedUInt64Max == 0 ? _elapsedCount.ToString() : elapsedReachedUInt64Max.ToString() + "x" + UInt64.MaxValue.ToString() + " + " + _elapsedCount;
 	}
 }
 

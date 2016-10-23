@@ -1,23 +1,26 @@
-﻿namespace Pluton.Core {
+﻿namespace Pluton.Core
+{
 	using System;
 	using System.IO;
 	using System.Timers;
 	using UnityEngine;
 	using System.Linq;
 
-	public class Bootstrap : MonoBehaviour {
-		
+	public class Bootstrap : MonoBehaviour
+	{
+
 		public static string Version => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
 		public static ServerTimers timers;
 
 		public static bool PlutonLoaded = false;
 
-		public static void AttachBootstrap() {
+		public static void AttachBootstrap()
+		{
 			try {
 				foreach (var file in Directory.GetFiles(System.Reflection.Assembly.GetExecutingAssembly().Location.Replace(Path.DirectorySeparatorChar + "Pluton.Core.dll", ""), "Pluton.*.dll")) {
-					if (!file.EndsWith ("Pluton.Core.dll")) {
-						System.Reflection.Assembly module = System.Reflection.Assembly.LoadFile (file);
+					if (!file.EndsWith("Pluton.Core.dll")) {
+						System.Reflection.Assembly module = System.Reflection.Assembly.LoadFile(file);
 						foreach (var type in module.GetTypes()) {
 							if (type.ToString() == file.Split(Path.DirectorySeparatorChar).Last().Replace("dll", "Bootstrap")) {
 								module.CreateInstance(type.ToString());
@@ -40,7 +43,8 @@
 			}
 		}
 
-		public static void SaveAll(object x = null) {
+		public static void SaveAll(object x = null)
+		{
 			try {
 				DataStore.GetInstance().Save();
 			} catch (Exception ex) {
@@ -49,7 +53,8 @@
 			}
 		}
 
-		public static void ReloadTimers() {
+		public static void ReloadTimers()
+		{
 			if (timers != null)
 				timers.Dispose();
 
@@ -62,10 +67,11 @@
 			}
 		}
 
-		public static void Init() {
+		public static void Init()
+		{
 			if (!Directory.Exists(Util.GetInstance().GetPublicFolder()))
 				Directory.CreateDirectory(Util.GetInstance().GetPublicFolder());
-			
+
 			Logger.Init();
 			CryptoExtensions.Init();
 			DataStore.GetInstance().Load();
@@ -73,18 +79,21 @@
 			ReloadTimers();
 		}
 
-		public class ServerTimers {
-			
+		public class ServerTimers
+		{
+
 			public readonly Timer _savetimer;
 
-			public ServerTimers(double save) {
+			public ServerTimers(double save)
+			{
 				_savetimer = new Timer(save);
 
 				Debug.Log("Server timers started!");
 				_savetimer.Elapsed += _savetimer_Elapsed;
 			}
 
-			public void Dispose() {
+			public void Dispose()
+			{
 				Stop();
 				_savetimer.Dispose();
 			}
