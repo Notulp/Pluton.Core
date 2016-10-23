@@ -1,5 +1,4 @@
-﻿namespace Pluton.Core.PluginLoaders
-{
+﻿namespace Pluton.Core.PluginLoaders {
 	using System;
 	using System.IO;
 	using System.Collections.Generic;
@@ -7,8 +6,7 @@
 	using System.Net;
 	using System.Text;
 
-    public class BasePlugin : CountedInstance, IPlugin
-	{
+    public class BasePlugin : CountedInstance, IPlugin {
         public string Author;
 
         public string About;
@@ -52,8 +50,7 @@
 
 		public virtual void AssignVariables() { }
 
-        public BasePlugin(string name)
-        {
+        public BasePlugin(string name) {
             Name = name;
 			RootDir = new DirectoryInfo(Path.Combine(PluginLoader.GetInstance().pluginDirectory.FullName, name));
             Globals = new List<string>();
@@ -64,8 +61,7 @@
 
 		public string GetPluginPath() => Path.Combine(RootDir.FullName, Name + PluginLoaderHelper.GetExtension(GetType()));
 
-        public virtual string FormatException(Exception ex)
-        {
+        public virtual string FormatException(Exception ex) {
             string nuline = Environment.NewLine;
             return ex.Message + nuline + ex.TargetSite.ToString() + nuline + ex.StackTrace;
         }
@@ -76,14 +72,12 @@
 
         #region file operations
 
-        private static string NormalizePath(string path)
-        {
+        private static string NormalizePath(string path) {
             return Path.GetFullPath(new Uri(path).LocalPath)
                 .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 
-        public string ValidateRelativePath(string path)
-        {
+        public string ValidateRelativePath(string path) {
             string normalizedPath = NormalizePath(Path.Combine(RootDir.FullName, path));
             string rootDirNormalizedPath = NormalizePath(RootDir.FullName);
 
@@ -93,8 +87,7 @@
             return normalizedPath;
         }
 
-        public bool CreateDir(string path)
-        {
+        public bool CreateDir(string path) {
             try {
                 path = ValidateRelativePath(path);
                 if (path == null)
@@ -111,8 +104,7 @@
             return false;
         }
 
-        public void DeleteLog(string path)
-        {
+        public void DeleteLog(string path) {
             path = ValidateRelativePath(path + ".log");
             if (path == null)
                 return;
@@ -121,8 +113,7 @@
                 File.Delete(path);
         }
 
-        public void Log(string path, string text)
-        {
+        public void Log(string path, string text) {
             path = ValidateRelativePath(path + ".log");
             if (path == null)
                 return;
@@ -130,8 +121,7 @@
             File.AppendAllText(path, "[" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "] " + text + "\r\n");
         }
 
-        public void RotateLog(string logfile, int max = 6)
-        {
+        public void RotateLog(string logfile, int max = 6) {
             logfile = ValidateRelativePath(logfile + ".log");
             if (logfile == null)
                 return;
@@ -162,8 +152,7 @@
 
         #region jsonfiles
 
-        public bool JsonFileExists(string path)
-        {
+        public bool JsonFileExists(string path) {
             path = ValidateRelativePath(path + ".json");
             if (path == null)
                 return false;
@@ -171,8 +160,7 @@
             return File.Exists(path);
         }
 
-        public string FromJsonFile(string path)
-        {
+        public string FromJsonFile(string path) {
             path = ValidateRelativePath(path + ".json");
             if (JsonFileExists(path))
                 return File.ReadAllText(path);
@@ -180,8 +168,7 @@
             return null;
         }
 
-        public void ToJsonFile(string path, string json)
-        {
+        public void ToJsonFile(string path, string json) {
             path = ValidateRelativePath(path + ".json");
             if (path == null)
                 return;
@@ -193,8 +180,7 @@
 
         #region inifiles
 
-        public IniParser GetIni(string path)
-        {
+        public IniParser GetIni(string path) {
             path = ValidateRelativePath(path + ".ini");
             if (path == null)
                 return null;
@@ -205,8 +191,7 @@
             return null;
         }
 
-        public bool IniExists(string path)
-        {
+        public bool IniExists(string path) {
             path = ValidateRelativePath(path + ".ini");
             if (path == null)
                 return false;
@@ -214,8 +199,7 @@
             return File.Exists(path);
         }
 
-        public IniParser CreateIni(string path = null)
-        {
+        public IniParser CreateIni(string path = null) {
             try {
                 path = ValidateRelativePath(path + ".ini");
                 if (String.IsNullOrEmpty(path)) {
@@ -232,8 +216,7 @@
             return null;
         }
 
-        public List<IniParser> GetInis(string path)
-        {
+        public List<IniParser> GetInis(string path) {
             path = ValidateRelativePath(path);
             if (path == null)
                 return new List<IniParser>();
@@ -243,8 +226,7 @@
 
         #endregion
 
-        public BasePlugin GetPlugin(string name)
-        {
+        public BasePlugin GetPlugin(string name) {
             BasePlugin plugin;
             if (!PluginLoader.GetInstance().Plugins.TryGetValue(name, out plugin)) {
                 return null;
@@ -266,8 +248,7 @@
 
         #region hooks
 
-        public void OnTimerCB(TimedEvent evt)
-        {
+        public void OnTimerCB(TimedEvent evt) {
             if (Globals.Contains(evt.Name + "Callback"))
                 Invoke(evt.Name + "Callback", evt);
         }
@@ -276,8 +257,7 @@
 
         #region timer methods
 
-        public TimedEvent CreateTimer(string name, int timeoutDelay)
-        {
+        public TimedEvent CreateTimer(string name, int timeoutDelay) {
             TimedEvent timedEvent = GetTimer(name);
             if (timedEvent == null) {
                 timedEvent = new TimedEvent(name, timeoutDelay);
@@ -287,8 +267,7 @@
             return timedEvent;
         }
 
-        public TimedEvent CreateTimer(string name, int timeoutDelay, Action<TimedEvent> callback)
-        {
+        public TimedEvent CreateTimer(string name, int timeoutDelay, Action<TimedEvent> callback) {
             TimedEvent timedEvent = GetTimer(name);
             if (timedEvent == null) {
                 timedEvent = new TimedEvent(name, timeoutDelay);
@@ -298,8 +277,7 @@
             return timedEvent;
         }
 
-        public TimedEvent CreateTimer(string name, int timeoutDelay, Dictionary<string, object> args)
-        {
+        public TimedEvent CreateTimer(string name, int timeoutDelay, Dictionary<string, object> args) {
             TimedEvent timedEvent = GetTimer(name);
             if (timedEvent == null) {
                 timedEvent = new TimedEvent(name, timeoutDelay);
@@ -310,8 +288,7 @@
             return timedEvent;
         }
 
-        public TimedEvent CreateTimer(string name, int timeoutDelay, Dictionary<string, object> args, Action<TimedEvent> callback)
-        {
+        public TimedEvent CreateTimer(string name, int timeoutDelay, Dictionary<string, object> args, Action<TimedEvent> callback) {
             TimedEvent timedEvent = GetTimer(name);
             if (timedEvent == null) {
                 timedEvent = new TimedEvent(name, timeoutDelay);
@@ -322,8 +299,7 @@
             return timedEvent;
         }
 
-        public TimedEvent GetTimer(string name)
-        {
+        public TimedEvent GetTimer(string name) {
             TimedEvent result;
             if (Timers.ContainsKey(name)) {
                 result = Timers[name];
@@ -333,22 +309,19 @@
             return result;
         }
 
-        public void KillTimer(string name)
-        {
+        public void KillTimer(string name) {
             TimedEvent timer = GetTimer(name);
             KillTimer(timer);
         }
 
-        public void KillTimer(TimedEvent timer)
-        {
+        public void KillTimer(TimedEvent timer) {
             if (timer != null) {
             	timer.Kill();
             	Timers.Remove(timer.Name);
             }
         }
 
-        public void KillTimers()
-        {
+        public void KillTimers() {
             foreach (TimedEvent current in Timers.Values) {
                 current.Kill();
             }
@@ -363,8 +336,7 @@
 
         #region ParalellTimers
 
-        public TimedEvent CreateParallelTimer(string name, int timeoutDelay, Dictionary<string, object> args)
-        {
+        public TimedEvent CreateParallelTimer(string name, int timeoutDelay, Dictionary<string, object> args) {
             var timedEvent = new TimedEvent(name, timeoutDelay);
             timedEvent.Args = args;
             timedEvent.OnFire += OnTimerCB;
@@ -372,8 +344,7 @@
             return timedEvent;
         }
 
-        public TimedEvent CreateParallelTimer(string name, int timeoutDelay, Dictionary<string, object> args, Action<TimedEvent> callback)
-        {
+        public TimedEvent CreateParallelTimer(string name, int timeoutDelay, Dictionary<string, object> args, Action<TimedEvent> callback) {
             var timedEvent = new TimedEvent(name, timeoutDelay);
             timedEvent.Args = args;
 			timedEvent.OnFire += callback.Invoke;
@@ -381,22 +352,19 @@
             return timedEvent;
         }
 
-        public List<TimedEvent> GetParallelTimer(string name)
-        {
+        public List<TimedEvent> GetParallelTimer(string name) {
             return (from timer in ParallelTimers
                              where timer.Name == name
                              select timer).ToList();
         }
 
-        public void KillParallelTimer(string name)
-        {
+        public void KillParallelTimer(string name) {
             foreach (TimedEvent timer in GetParallelTimer(name)) {
                 KillParallelTimer(timer);
             }
         }
 
-        public void KillParallelTimer(TimedEvent timer)
-        {
+        public void KillParallelTimer(TimedEvent timer) {
             if (timer != null) {
             	timer.Kill();
                 ParallelTimers.Remove(timer);
@@ -418,22 +386,19 @@
 		public Dictionary<string, object> CreateDict(int cap = 10) => new Dictionary<string, object>(cap);
     }
 
-    public class Web : Singleton<Web>, ISingleton
-    {
+    public class Web : Singleton<Web>, ISingleton {
         public void Initialize(){ }
 
         public string UserAgent = "Pluton Plugin - " + Bootstrap.Version;
 
-        public string GET(string url)
-        {
+        public string GET(string url) {
             using (System.Net.WebClient client = new System.Net.WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 return client.DownloadString(url);
             }
         }
 
-        public string GET(string url, Func<SSLVerificationEvent, bool> verifySSLcallback)
-        {
+        public string GET(string url, Func<SSLVerificationEvent, bool> verifySSLcallback) {
             using (System.Net.WebClient client = new System.Net.WebClient()) {
                 System.Net.Security.RemoteCertificateValidationCallback verifyssl = (sender, cert, chain, errors) => verifySSLcallback.Invoke(new SSLVerificationEvent(cert, chain, errors));
                 System.Net.ServicePointManager.ServerCertificateValidationCallback += verifyssl;
@@ -444,8 +409,7 @@
             }
         }
 
-        public void GETAsync(string url, Action<string> callback)
-        {
+        public void GETAsync(string url, Action<string> callback) {
             using (System.Net.WebClient client = new System.Net.WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.DownloadStringCompleted += (s, e) => callback.Invoke(e.Result);
@@ -453,8 +417,7 @@
             }
         }
 
-        public string POST(string url, string data)
-        {
+        public string POST(string url, string data) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -462,8 +425,7 @@
             }
         }
 
-        public string POST(string url, string data, Func<SSLVerificationEvent, bool> verifySSLcallback)
-        {
+        public string POST(string url, string data, Func<SSLVerificationEvent, bool> verifySSLcallback) {
             using (WebClient client = new WebClient()) {
                 System.Net.Security.RemoteCertificateValidationCallback verifyssl = (sender, cert, chain, errors) => verifySSLcallback.Invoke(new SSLVerificationEvent(cert, chain, errors));
                 System.Net.ServicePointManager.ServerCertificateValidationCallback += verifyssl;
@@ -475,8 +437,7 @@
             }
         }
 
-        public void POSTAsync(string url, string data, Action<string> callback)
-        {
+        public void POSTAsync(string url, string data, Action<string> callback) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -485,16 +446,14 @@
             }
         }
 
-        public string DELETE(string url)
-        {
+        public string DELETE(string url) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 return client.UploadString(url, "DELETE", "");
             }
         }
 
-        public string DELETE(string url, Func<SSLVerificationEvent, bool> verifySSLcallback)
-        {
+        public string DELETE(string url, Func<SSLVerificationEvent, bool> verifySSLcallback) {
             using (WebClient client = new WebClient()) {
                 System.Net.Security.RemoteCertificateValidationCallback verifyssl = (sender, cert, chain, errors) => verifySSLcallback.Invoke(new SSLVerificationEvent(cert, chain, errors));
                 System.Net.ServicePointManager.ServerCertificateValidationCallback += verifyssl;
@@ -505,8 +464,7 @@
             }
         }
 
-        public void DELETEAsync(string url, Action<string> callback)
-        {
+        public void DELETEAsync(string url, Action<string> callback) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.UploadStringCompleted += (s, e) => callback.Invoke(e.Result);
@@ -514,8 +472,7 @@
             }
         }
 
-        public string PUT(string url, string data)
-        {
+        public string PUT(string url, string data) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -523,8 +480,7 @@
             }
         }
 
-        public string PUT(string url, string data, Func<SSLVerificationEvent, bool> verifySSLcallback)
-        {
+        public string PUT(string url, string data, Func<SSLVerificationEvent, bool> verifySSLcallback) {
             using (WebClient client = new WebClient()) {
                 System.Net.Security.RemoteCertificateValidationCallback verifyssl = (sender, cert, chain, errors) => verifySSLcallback.Invoke(new SSLVerificationEvent(cert, chain, errors));
                 System.Net.ServicePointManager.ServerCertificateValidationCallback += verifyssl;
@@ -536,8 +492,7 @@
             }
         }
 
-        public void PUTAsync(string url, string data, Action<string> callback)
-        {
+        public void PUTAsync(string url, string data, Action<string> callback) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -546,8 +501,7 @@
             }
         }
 
-        public string PATCH(string url, string data)
-        {
+        public string PATCH(string url, string data) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -555,8 +509,7 @@
             }
         }
 
-        public string PATCH(string url, string data, Func<SSLVerificationEvent, bool> verifySSLcallback)
-        {
+        public string PATCH(string url, string data, Func<SSLVerificationEvent, bool> verifySSLcallback) {
             using (WebClient client = new WebClient()) {
                 System.Net.Security.RemoteCertificateValidationCallback verifyssl = (sender, cert, chain, errors) => verifySSLcallback.Invoke(new SSLVerificationEvent(cert, chain, errors));
                 System.Net.ServicePointManager.ServerCertificateValidationCallback += verifyssl;
@@ -568,8 +521,7 @@
             }
         }
 
-        public void PATCHAsync(string url, string data, Action<string> callback)
-        {
+        public void PATCHAsync(string url, string data, Action<string> callback) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -578,8 +530,7 @@
             }
         }
 
-        public string OPTIONS(string url)
-        {
+        public string OPTIONS(string url) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.UploadString(url, "OPTIONS", "");
@@ -587,8 +538,7 @@
             }
         }
 
-        public string OPTIONS(string url, Func<SSLVerificationEvent, bool> verifySSLcallback)
-        {
+        public string OPTIONS(string url, Func<SSLVerificationEvent, bool> verifySSLcallback) {
             using (WebClient client = new WebClient()) {
                 System.Net.Security.RemoteCertificateValidationCallback verifyssl = (sender, cert, chain, errors) => verifySSLcallback.Invoke(new SSLVerificationEvent(cert, chain, errors));
                 System.Net.ServicePointManager.ServerCertificateValidationCallback += verifyssl;
@@ -600,8 +550,7 @@
             }
         }
 
-        public void OPTIONSAsync(string url, Action<string> callback)
-        {
+        public void OPTIONSAsync(string url, Action<string> callback) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.UploadStringCompleted += (s, e) => callback.Invoke(client.ResponseHeaders["Allow"]);
@@ -609,8 +558,7 @@
             }
         }
 
-        public string POSTJSON(string url, string json)
-        {
+        public string POSTJSON(string url, string json) {
             using (WebClient client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = UserAgent;
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
@@ -618,8 +566,7 @@
             }
         }
 
-        public string POSTJSON(string url, string json, Func<SSLVerificationEvent, bool> verifySSLcallback)
-        {
+        public string POSTJSON(string url, string json, Func<SSLVerificationEvent, bool> verifySSLcallback) {
             using (WebClient client = new WebClient()) {
                 System.Net.Security.RemoteCertificateValidationCallback verifyssl = (sender, cert, chain, errors) => verifySSLcallback.Invoke(new SSLVerificationEvent(cert, chain, errors));
 				ServicePointManager.ServerCertificateValidationCallback += verifyssl;
@@ -631,20 +578,16 @@
             }
         }
 
-        public class SSLVerificationEvent
-        {
+        public class SSLVerificationEvent {
             public System.Security.Cryptography.X509Certificates.X509Certificate Cert;
             public System.Security.Cryptography.X509Certificates.X509Chain Chain;
             public System.Net.Security.SslPolicyErrors Errors;
 
             public bool HasErrors = false;
 
-            public SSLVerificationEvent(
-                System.Security.Cryptography.X509Certificates.X509Certificate cert,
-                System.Security.Cryptography.X509Certificates.X509Chain chain,
-                System.Net.Security.SslPolicyErrors errors
-            )
-            {
+            public SSLVerificationEvent(System.Security.Cryptography.X509Certificates.X509Certificate cert,
+			                            System.Security.Cryptography.X509Certificates.X509Chain chain,
+			                            System.Net.Security.SslPolicyErrors errors) {
                 Cert = cert;
                 Chain = chain;
                 Errors = errors;

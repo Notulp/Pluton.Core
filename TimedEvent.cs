@@ -1,11 +1,9 @@
-﻿namespace Pluton.Core
-{
+﻿namespace Pluton.Core {
 	using System;
 	using System.Collections.Generic;
 	using System.Timers;
 
-	public class TimedEvent : CountedInstance
-	{
+	public class TimedEvent : CountedInstance {
 
 		Dictionary<string, object> _args;
 		readonly string _name;
@@ -18,8 +16,7 @@
 
 		public event TimedEventFireDelegate OnFire;
 
-		public TimedEvent(string name, double interval)
-		{
+		public TimedEvent(string name, double interval) {
 			_name = name;
 			_timer = new Timer();
 			_timer.Interval = interval;
@@ -28,13 +25,11 @@
 		}
 
 		public TimedEvent(string name, double interval, Dictionary<string, object> args)
-			: this(name, interval)
-		{
+			: this(name, interval) {
 			_args = args;
 		}
 
-		void _timer_Elapsed(object sender, ElapsedEventArgs e)
-		{
+		void _timer_Elapsed(object sender, ElapsedEventArgs e) {
 			if (OnFire != null)
 				OnFire(this);
 			
@@ -49,16 +44,14 @@
 			lastTick = DateTime.UtcNow.Ticks;
 		}
 
-		public void Start()
-		{
+		public void Start() {
 			_timer.Start();
 			lastTick = DateTime.UtcNow.Ticks;
 		}
 
 		public void Stop() => _timer.Stop();
 
-		public void Kill()
-		{
+		public void Kill() {
 			_timer.Stop();
 			_timer.Dispose();
 		}

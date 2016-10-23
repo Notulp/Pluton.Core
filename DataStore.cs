@@ -1,5 +1,4 @@
-﻿namespace Pluton.Core
-{
+﻿namespace Pluton.Core {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
@@ -8,13 +7,12 @@
 	using UnityEngine;
 	using Serialize;
 
-	public class DataStore : CountedInstance
-	{
+	public class DataStore : CountedInstance {
 		public readonly Hashtable datastore;
 		static DataStore instance;
 		public string PATH;
 
-		public object this[string tablename, object key] {
+		public object this [string tablename, object key] {
 			get {
 				return Get(tablename, key);
 			}
@@ -23,41 +21,35 @@
 			}
 		}
 
-		static object SerializeIfPossible(object keyorval)
-		{
+		static object SerializeIfPossible(object keyorval) {
 			if (keyorval == null)
 				return keyorval;
 
-			if (keyorval is Vector3)
-			{
+			if (keyorval is Vector3) {
 				return ((Vector3)keyorval).Serialize();
 			}
-			if (keyorval is Quaternion)
-			{
+			if (keyorval is Quaternion) {
 				return ((Quaternion)keyorval).Serialize();
 			}
 
 			return keyorval;
 		}
 
-		static object DeserializeIfPossible(object keyorval)
-		{
+		static object DeserializeIfPossible(object keyorval) {
 			if (keyorval is ISerializable) {
 				return ((ISerializable)keyorval).Deserialize();
 			}
 			return keyorval;
 		}
 
-		public string RemoveChars(string str)
-		{
+		public string RemoveChars(string str) {
 			foreach (string c in new string[] { "/", "\\", "%", "$" }) {
 				str = str.Replace(c, "");
 			}
 			return str;
 		}
 
-		public bool ToIni(string inifilename = "DataStore")
-		{
+		public bool ToIni(string inifilename = "DataStore") {
 			string inipath = Path.Combine(Util.GetInstance().GetPublicFolder(), RemoveChars(inifilename).Trim() + ".ini");
 			File.WriteAllText(inipath, "");
 			var ini = new IniParser(inipath);
@@ -95,19 +87,16 @@
 			return true;           
 		}
 
-		public bool TableToIni(string tablename, string inipath)
-		{
+		public bool TableToIni(string tablename, string inipath) {
 			var hashtable = (Hashtable)datastore[tablename];
-			if (hashtable != null)
-			{
+			if (hashtable != null) {
 				if (!Path.HasExtension(inipath))
 					inipath += ".ini";
 				File.WriteAllText(inipath, "");
 				var ini = new IniParser(inipath);
 				ini.Save();
 
-				foreach (string setting in hashtable.Keys)
-				{
+				foreach (string setting in hashtable.Keys) {
 					ini.AddSetting(tablename, setting, hashtable[setting].ToString());
 				}
 				ini.Save();
@@ -116,15 +105,11 @@
 			return false;
 		}
 
-		public bool AddFromIni(string inipath)
-		{
-			if (File.Exists(inipath))
-			{
+		public bool AddFromIni(string inipath) {
+			if (File.Exists(inipath)) {
 				var ini = new IniParser(inipath);
-				foreach (string section in ini.Sections.Keys)
-				{
-					foreach (string setting in ini.EnumSection(section))
-					{
+				foreach (string section in ini.Sections.Keys) {
+					foreach (string setting in ini.EnumSection(section)) {
 						Add(section, setting, ini.GetSetting(section, setting));
 					}
 				}
@@ -133,8 +118,7 @@
 			return false;
 		}
 
-		public void Add(string tablename, object key, object val)
-		{
+		public void Add(string tablename, object key, object val) {
 			if (key == null)
 				key = "NullReference";
 
@@ -146,8 +130,7 @@
 			hashtable[SerializeIfPossible(key)] = SerializeIfPossible(val);
 		}
 
-		public bool ContainsKey(string tablename, object key)
-		{
+		public bool ContainsKey(string tablename, object key) {
 			if (key == null)
 				return false;
 
@@ -158,8 +141,7 @@
 			return false;
 		}
 
-		public bool ContainsValue(string tablename, object val)
-		{
+		public bool ContainsValue(string tablename, object val) {
 			var hashtable = (Hashtable)datastore[tablename];
 			if (hashtable != null) {
 				return hashtable.ContainsValue(SerializeIfPossible(val));
@@ -167,8 +149,7 @@
 			return false;
 		}
 
-		public int Count(string tablename)
-		{
+		public int Count(string tablename) {
 			var hashtable = (Hashtable)datastore[tablename];
 			if (hashtable == null) {
 				return 0;
@@ -176,15 +157,13 @@
 			return hashtable.Count;
 		}
 
-		public void Flush(string tablename)
-		{
+		public void Flush(string tablename) {
 			if (((Hashtable)datastore[tablename]) != null) {
 				datastore.Remove(tablename);
 			}
 		}
 
-		public object Get(string tablename, object key)
-		{
+		public object Get(string tablename, object key) {
 			if (key == null)
 				return null;
 
@@ -192,16 +171,14 @@
 			return hashtable == null ? null : DeserializeIfPossible(hashtable[SerializeIfPossible(key)]);
 		}
 
-		public static DataStore GetInstance()
-		{
+		public static DataStore GetInstance() {
 			if (instance == null) {
 				instance = new DataStore("PlutonDatastore.ds");
 			}
 			return instance;
 		}
 
-		public Hashtable GetTable(string tablename)
-		{
+		public Hashtable GetTable(string tablename) {
 			var hashtable = (Hashtable)datastore[tablename];
 			if (hashtable == null) {
 				return null;
@@ -213,8 +190,7 @@
 			return parse;
 		}
 
-		public object[] Keys(string tablename)
-		{
+		public object[] Keys(string tablename) {
 			var hashtable = (Hashtable)datastore[tablename];
 			if (hashtable == null) {
 				return null;
@@ -226,8 +202,7 @@
 			return parse.ToArray<object>();
 		}
 
-		public void Load()
-		{
+		public void Load() {
 			if (File.Exists(PATH)) {
 				try {
 					Hashtable hashtable = Util.HashtableFromFile(PATH);
@@ -247,8 +222,7 @@
 			}
 		}
 
-		public void Remove(string tablename, object key)
-		{
+		public void Remove(string tablename, object key) {
 			if (key == null)
 				return;
 
@@ -258,16 +232,14 @@
 			}
 		}
 
-		public void Save()
-		{
+		public void Save() {
 			if (datastore.Count != 0) {
 				Util.HashtableToFile(datastore, PATH);
 				Debug.Log("DataStore saved to " + PATH);
 			}
 		}
 
-		public object[] Values(string tablename)
-		{
+		public object[] Values(string tablename) {
 			var hashtable = (Hashtable)datastore[tablename];
 			if (hashtable == null) {
 				return null;
@@ -279,8 +251,7 @@
 			return parse.ToArray();
 		}
 
-		public DataStore(string path)
-		{
+		public DataStore(string path) {
 			path = RemoveChars(path);
 			datastore = new Hashtable();
 			PATH = Path.Combine(Util.GetInstance().GetPublicFolder(), path);

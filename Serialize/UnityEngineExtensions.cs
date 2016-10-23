@@ -1,16 +1,12 @@
-﻿namespace Pluton.Core.Serialize
-{
+﻿namespace Pluton.Core.Serialize {
 	using UnityEngine;
 
-	public static class UnityEngineExtensions
-	{
-		public static SerializedVector3 Serialize(this Vector3 self)
-		{
+	public static class UnityEngineExtensions {
+		public static SerializedVector3 Serialize(this Vector3 self) {
 			return new SerializedVector3(self);
 		}
 
-		public static SerializedQuaternion Serialize(this Quaternion self)
-		{
+		public static SerializedQuaternion Serialize(this Quaternion self) {
 			return new SerializedQuaternion(self);
 		}
 	}

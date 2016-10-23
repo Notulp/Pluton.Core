@@ -1,15 +1,12 @@
-﻿namespace Pluton.Core
-{
+﻿namespace Pluton.Core {
 	using System;
 	using System.IO;
 	using UnityEngine;
 
-	public class CoreConfig : Singleton<CoreConfig>, ISingleton
-	{
+	public class CoreConfig : Singleton<CoreConfig>, ISingleton {
 		IniParser ConfigFile;
 
-		public void Initialize()
-		{
+		public void Initialize() {
 			string ConfigPath = DirectoryConfig.GetInstance().GetConfigPath("Core");
 
 			if (File.Exists(ConfigPath)) {
@@ -25,15 +22,13 @@
 			}
 		}
 
-		static CoreConfig()
-		{
+		static CoreConfig() {
 			dependencies = new System.Collections.Generic.List<Func<bool>> {
 				() => SingletonEx.IsInitialized<DirectoryConfig>()
 			};
 		}
 
-		public void GenerateConfig()
-		{
+		public void GenerateConfig() {
 			ConfigFile.AddSetting("csharp", "enabled", "true");
 			ConfigFile.AddSetting("csharp", "checkHash", "true");
 
@@ -54,8 +49,7 @@
 
 		public bool GetBoolValue(string Section, string Setting) => ConfigFile.GetBoolSetting(Section, Setting);
 
-		public void Reload()
-		{
+		public void Reload() {
 			string ConfigPath = DirectoryConfig.GetInstance().GetConfigPath("Core");
 
 			if (File.Exists(ConfigPath))

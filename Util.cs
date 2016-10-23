@@ -1,6 +1,5 @@
-﻿using Pluton.Core.PluginLoaders;
-namespace Pluton.Core
-{
+﻿namespace Pluton.Core {
+	using Pluton.Core.PluginLoaders;
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
@@ -10,8 +9,7 @@ namespace Pluton.Core
 	using System.Text.RegularExpressions;
 	using UnityEngine;
 
-	public class Util : Singleton<Util>, ISingleton
-	{
+	public class Util : Singleton<Util>, ISingleton {
 		public readonly Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
 
 		public void DestroyObject(GameObject go) => UnityEngine.Object.DestroyImmediate(go);
@@ -28,8 +26,7 @@ namespace Pluton.Core
 		public bool DumpObjToFile(string path, object obj, int depth, int maxItems, bool disPrivate, string prefix = "")
 					=> DumpObjToFile(path, obj, depth, maxItems, disPrivate, false, prefix);
 
-		public bool DumpObjToFile(string path, object obj, int depth, int maxItems, bool disPrivate, bool fullClassName, string prefix = "")
-		{
+		public bool DumpObjToFile(string path, object obj, int depth, int maxItems, bool disPrivate, bool fullClassName, string prefix = "") {
 			path = DataStore.GetInstance().RemoveChars(path);
 			path = Path.Combine(Path.Combine(GetPublicFolder(), "Dumps"), path + ".dump");
 			if (path == null)
@@ -75,8 +72,7 @@ namespace Pluton.Core
 
 		public float GetVectorsDistance(Vector3 v1, Vector3 v2) => Vector3.Distance(v1, v2);
 
-		public string[] GetQuotedArgs(string[] sArr)
-		{
+		public string[] GetQuotedArgs(string[] sArr) {
 			bool inQuote = false;
 			string current = "";
 			var final = new List<string>();
@@ -104,16 +100,14 @@ namespace Pluton.Core
 			return final.ToArray();
 		}
 
-		public static Hashtable HashtableFromFile(string path)
-		{
+		public static Hashtable HashtableFromFile(string path) {
 			using (FileStream stream = new FileStream(path, FileMode.Open)) {
 				var formatter = new BinaryFormatter();
 				return (Hashtable)formatter.Deserialize(stream);
 			}
 		}
 
-		public static void HashtableToFile(Hashtable ht, string path)
-		{
+		public static void HashtableToFile(Hashtable ht, string path) {
 			using (FileStream stream = new FileStream(path, FileMode.Create)) {
 				var formatter = new BinaryFormatter();
 				formatter.Serialize(stream, ht);
@@ -134,8 +128,7 @@ namespace Pluton.Core
 
 		public Quaternion RotateZ(Quaternion q, float angle) => q *= Quaternion.Euler(0f, 0f, angle);
 
-		public bool TryFindType(string typeName, out Type t)
-		{
+		public bool TryFindType(string typeName, out Type t) {
 			lock (typeCache) {
 				if (!typeCache.TryGetValue(typeName, out t)) {
 					foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
@@ -150,8 +143,7 @@ namespace Pluton.Core
 			return (t != null);
 		}
 
-		public Type TryFindReturnType(string typeName)
-		{
+		public Type TryFindReturnType(string typeName) {
 			Type t;
 			if (TryFindType(typeName, out t))
 				return t;

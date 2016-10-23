@@ -1,33 +1,28 @@
-﻿namespace Pluton.Core.PluginLoaders
-{
+﻿namespace Pluton.Core.PluginLoaders {
 	using System;
 	using System.IO;
 	using System.Linq;
 	using Jint;
 	using Jint.Expressions;
 
-    public class JSPlugin : BasePlugin
-	{
-        public JintEngine Engine;
-        public Program Program;
+	public class JSPlugin : BasePlugin {
+		public JintEngine Engine;
+		public Program Program;
 
-        public JSPlugin(string name) : base(name)
-        {
+		public JSPlugin(string name)
+			: base(name) {
 			string code = File.ReadAllText(GetPluginPath());
 
-            System.Threading.ThreadPool.QueueUserWorkItem(
-                new System.Threading.WaitCallback(a => Load(code)), null);
-        }
+			System.Threading.ThreadPool.QueueUserWorkItem(
+				new System.Threading.WaitCallback(a => Load(code)), null);
+		}
 
-        public override object Invoke(string method, params object[] args)
-        {
-            try {
-				if (State == PluginState.Loaded && Globals.Contains(method))
-				{
+		public override object Invoke(string method, params object[] args) {
+			try {
+				if (State == PluginState.Loaded && Globals.Contains(method)) {
 					object result = null;
 
-					using (new Stopper(Name, method))
-					{
+					using (new Stopper(Name, method)) {
 						result = Engine.CallFunction(method, args);
 					}
 					return result;
@@ -36,22 +31,17 @@
 				return null;
 			} catch (Exception ex) {
 				string fileinfo = $"{GetType().Name}<{Name}>.{method}(){Environment.NewLine}";
-                Logger.LogError(fileinfo + FormatException(ex));
-                return null;
-            }
-        }
+				Logger.LogError(fileinfo + FormatException(ex));
+				return null;
+			}
+		}
 
-        public override void Load(string code)
-        {
-			try
-			{
-				if (CoreConfig.GetInstance().GetBoolValue("javascript", "checkHash") && !code.VerifyMD5Hash())
-				{
+		public override void Load(string code) {
+			try {
+				if (CoreConfig.GetInstance().GetBoolValue("javascript", "checkHash") && !code.VerifyMD5Hash()) {
 					Logger.LogDebug($"[{GetType().Name}] MD5Hash not found for: {Name}");
 					State = PluginState.HashNotFound;
-				}
-				else
-				{
+				} else {
 
 					Engine = new JintEngine(Options.Ecmascript5)
 						.AllowClr(true);
@@ -68,8 +58,8 @@
 					Program = JintEngine.Compile(code, false);
 
 					Globals = (from statement in Program.Statements
-							   where statement.GetType() == typeof(FunctionDeclarationStatement)
-							   select ((FunctionDeclarationStatement)statement).Name).ToList();
+					           where statement.GetType() == typeof(FunctionDeclarationStatement)
+					           select ((FunctionDeclarationStatement)statement).Name).ToList();
 
 					Engine.Run(Program);
 
@@ -82,25 +72,22 @@
 
 					State = PluginState.Loaded;
 				}
-            }
-			catch (Exception ex)
-			{
-                Logger.LogException(ex);
-                State = PluginState.FailedToLoad;
+			} catch (Exception ex) {
+				Logger.LogException(ex);
+				State = PluginState.FailedToLoad;
 			}
 
-            PluginLoader.GetInstance().OnPluginLoaded(this);
-        }
+			PluginLoader.GetInstance().OnPluginLoaded(this);
+		}
 
 		public override object GetGlobalObject(string id) => Engine.Run($"return {id};");
 
-        public delegate Jint.Native.JsInstance importit(string t);
+		public delegate Jint.Native.JsInstance importit(string t);
 
-        public Jint.Native.JsInstance importClass(string type)
-        {
-            Engine.SetParameter(type.Split('.').Last(), Util.GetInstance().TryFindReturnType(type));
-            return (Engine.Global as Jint.Native.JsDictionaryObject)[type.Split('.').Last()];
-        }
-    }
+		public Jint.Native.JsInstance importClass(string type) {
+			Engine.SetParameter(type.Split('.').Last(), Util.GetInstance().TryFindReturnType(type));
+			return (Engine.Global as Jint.Native.JsDictionaryObject)[type.Split('.').Last()];
+		}
+	}
 }
 

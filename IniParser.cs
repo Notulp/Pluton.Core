@@ -1,19 +1,17 @@
-﻿namespace Pluton.Core
-{
+﻿namespace Pluton.Core {
 	using System;
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Linq;
 
-	public class IniParser : CountedInstance
-	{
+	public class IniParser : CountedInstance {
 		public readonly string FilePath;
 
 		public readonly string Name;
 
 		public Dictionary<string, IniSection> Sections = new Dictionary<string, IniSection>();
 
-		public string this[string section, string setting] {
+		public string this [string section, string setting] {
 			get {
 				return this[section][setting];
 			}
@@ -31,7 +29,7 @@
 			}
 		}
 
-		public IniSection this[string section] {
+		public IniSection this [string section] {
 			get {
 				if (Sections.ContainsKey(section))
 					return Sections[section];
@@ -39,8 +37,7 @@
 			}
 		}
 
-		public IniParser(string iniPath)
-		{
+		public IniParser(string iniPath) {
 			string section = "ROOT";
 			FilePath = iniPath;
 
@@ -101,9 +98,8 @@
 
 						if (ConfEqValue.Length == 2)
 							currentSection.AddSetting(ConfEqValue[0], ConfEqValue[1]);
-
 						else if (ConfEqValue.Length == 1)
-							currentSection.AddSetting(ConfEqValue[0], null);
+								currentSection.AddSetting(ConfEqValue[0], null);
 
 						if (comments.Count != 0) {
 							currentSection.Settings[ConfEqValue[0]].Comments.AddRange(comments);
@@ -128,52 +124,43 @@
 				Logger.LogWarning($"[IniParser] There is no {setting} setting in [{section}] section in: {FilePath}");
 		}
 
-		public void AddSetting(string section, string setting)
-		{
+		public void AddSetting(string section, string setting) {
 			this[section, setting] = String.Empty;
 		}
 
-		public void AddSetting(string section, string setting, string value)
-		{
+		public void AddSetting(string section, string setting, string value) {
 			this[section, setting] = value;
 		}
 
-		public int Count()
-		{
+		public int Count() {
 			return Sections.Count;
 		}
 
-		public void DeleteSetting(string section, string setting)
-		{
+		public void DeleteSetting(string section, string setting) {
 			this[section]?.Settings.Remove(setting);
 		}
 
-		public void DeleteSection(string section)
-		{
+		public void DeleteSection(string section) {
 			if (Sections.ContainsKey(section))
 				Sections.Remove(section);
 		}
 
-		public string[] EnumSection(string section)
-		{
+		public string[] EnumSection(string section) {
 			return Sections.ContainsKey(section) ? Sections[section].Settings.Keys.ToArray() : new string[0];
 		}
 
-		public string GetSetting(string section, string setting)
-		{
+		public string GetSetting(string section, string setting) {
 			return this[section, setting];
 		}
 
-		public string GetSetting(string section, string setting, string defaultvalue)
-		{
+		public string GetSetting(string section, string setting, string defaultvalue) {
 			if (this[section, setting] != null)
 				return this[section, setting];
 			this[section, setting] = defaultvalue;
 			return defaultvalue;
 		}
 
-		public bool GetBoolSetting(string section, string setting)
-		{
+		public bool GetBoolSetting(string section, string setting) {
 			bool result = false;
 			if (Boolean.TryParse(this[section, setting], out result))
 				return result;
@@ -181,16 +168,14 @@
 			return false;
 		}
 
-		public bool GetBoolSetting(string section, string setting, bool defaultvalue)
-		{
+		public bool GetBoolSetting(string section, string setting, bool defaultvalue) {
 			if (this[section, setting] != null)
 				return GetBoolSetting(section, setting);
 			this[section, setting] = defaultvalue.ToString();
 			return defaultvalue;
 		}
 
-		public int GetIntSetting(string section, string setting)
-		{
+		public int GetIntSetting(string section, string setting) {
 			int result = 0;
 			if (Int32.TryParse(this[section, setting], out result))
 				return result;
@@ -198,21 +183,18 @@
 			return 0;
 		}
 
-		public int GetIntSetting(string section, string setting, int defaultvalue)
-		{
+		public int GetIntSetting(string section, string setting, int defaultvalue) {
 			if (this[section, setting] != null)
 				return GetIntSetting(section, setting);
 			this[section, setting] = defaultvalue.ToString();
 			return defaultvalue;
 		}
 
-		public void Save()
-		{
+		public void Save() {
 			this.SaveSettings(FilePath);
 		}
 
-		public void SaveSettings(string newFilePath)
-		{
+		public void SaveSettings(string newFilePath) {
 			string result = String.Empty;
 			foreach (var section in Sections.Values) {
 				result += section.ToString() + Environment.NewLine;
@@ -222,18 +204,15 @@
 				writer.Write(result);
 		}
 
-		public void SetSetting(string section, string setting, string value)
-		{
+		public void SetSetting(string section, string setting, string value) {
 			this[section, setting] = value;
 		}
 
-		public bool ContainsSetting(string section, string setting)
-		{
+		public bool ContainsSetting(string section, string setting) {
 			return Sections.ContainsKey(section) && Sections[section].Settings.ContainsKey(setting);
 		}
 
-		public bool ContainsValue(string value)
-		{
+		public bool ContainsValue(string value) {
 			return Sections.Values.Any(section => {
 				return section.Settings.Any(setting => {
 					return setting.Value.Value == value;
@@ -241,12 +220,11 @@
 			});
 		}
 
-		public class IniSection
-		{
+		public class IniSection {
 
 			public List<string> Comments = new List<string>();
 
-			public string this[string index] {
+			public string this [string index] {
 				get {
 					if (Settings.ContainsKey(index))
 						return Settings[index].Value;
@@ -272,14 +250,12 @@
 			}
 
 			public IniSection(string name, params string[] comments)
-				: this(name)
-			{
+				: this(name) {
 				Comments = comments.ToList();
 			}
 
 			public IniSection(string name, IEnumerable<string> comments)
-				: this(name)
-			{
+				: this(name) {
 				Comments = comments.ToList();
 			}
 
@@ -295,8 +271,7 @@
 				Comments.Clear();
 			}
 
-			public override string ToString()
-			{
+			public override string ToString() {
 				string result = String.Empty;
 				string result2 = String.Empty;
 
@@ -307,7 +282,7 @@
 				foreach (IniSetting setting in Settings.Values)
 					result2 += setting.ToString();
 
-				return result + $"[{SectionName}]" + Environment.NewLine + result2;
+				return result +$"[{SectionName}]" + Environment.NewLine + result2;
 			}
 		}
 
@@ -324,14 +299,12 @@
 			}
 
 			public IniSetting(string name, string value, params string[] comments)
-				: this(name, value)
-			{
+				: this(name, value) {
 				Comments = comments.ToList();
 			}
 
 			public IniSetting(string name, string value, IEnumerable<string> comments)
-				: this(name, value)
-			{
+				: this(name, value) {
 				Comments = comments.ToList();
 			}
 
@@ -347,8 +320,7 @@
 				Comments.Clear();
 			}
 
-			public override string ToString()
-			{
+			public override string ToString() {
 				string result = String.Empty;
 				if (Comments.Count != 0) {
 					result += Environment.NewLine;
@@ -356,7 +328,7 @@
 						result += ";" + comment + Environment.NewLine;
 				}
 
-				return result + $"{SettingName}={Value}" + Environment.NewLine;
+				return result +$"{SettingName}={Value}" +  Environment.NewLine;
 			}
 		}
 	}
