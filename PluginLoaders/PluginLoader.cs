@@ -127,9 +127,6 @@
 				hook.hook.Dispose();
 			}
 			plugin.Hooks.Clear();
-
-			if (plugin.Globals.Contains("On_PluginDeinit"))
-				plugin.Invoke("On_PluginDeinit");
 		}
 
 		#endregion
