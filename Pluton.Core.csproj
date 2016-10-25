@@ -95,6 +95,8 @@
     <Compile Include="PluginLoaders\PluginLoader.Generic.cs" />
     <Compile Include="PluginLoaders\PluginLoaderHelper.cs" />
     <Compile Include="PluginLoaders\PluginWatcher.cs" />
+    <Compile Include="Pre.cs" />
+    <Compile Include="Event.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
