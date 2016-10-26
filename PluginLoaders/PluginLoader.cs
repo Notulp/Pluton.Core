@@ -47,7 +47,7 @@
 			InstallHooks(plugin);
 			Plugins.TryAdd(plugin.Name, plugin);
 
-			// probably make an event here that others can hook?
+			Hooks.On_PluginLoaded(plugin);
 
 			if (CurrentlyLoadingPlugins.Count == 0)
 				Hooks.OnNext("On_AllPluginLoaded");

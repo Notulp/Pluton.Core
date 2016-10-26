@@ -38,7 +38,10 @@
 		public List<string> HookNames = new List<string>();
 
 		internal Dictionary<string, Subject<object[]>> Subjects = new Dictionary<string, Subject<object[]>>()
-		{ { "On_AllPluginLoaded", new Subject<object[]>() } };
+		{
+			{ "On_AllPluginLoaded", new Subject<object[]>() },
+			{ "On_PluginLoaded", new Subject<object[]>() }
+		};
 
 		public Dictionary<string, Subject<object[]>> CreateOrUpdateSubjects()
 		{
@@ -66,6 +69,11 @@
 		public static Hook Subscribe(string hookname, BasePlugin plugin)
 		{
 			return new Hook(hookname, args => plugin.Invoke(hookname, args));
+		}
+
+		public static void On_PluginLoaded(BasePlugin plugin)
+		{
+			OnNext("On_PluginLoaded", plugin);
 		}
 	}
 }
