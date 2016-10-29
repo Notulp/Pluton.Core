@@ -25,3 +25,10 @@
 </a>
 
 This is the Pluton mod's core containing game independent classes such as DataStore, IniParser, Logger etc.
+
+* [Homepage](http://pluton.team) 
+* [Forum](http://forum.pluton.team)
+* [Wiki](http://forum.pluton.team/wiki/index/)
+* [Binaries](http://dl.pluton.team)
+* [Compiling](http://forum.pluton.team/wiki/compiling/)
+* [FAQ](http://forum.pluton.team/wiki/faq/)
