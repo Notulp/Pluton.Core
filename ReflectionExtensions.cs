@@ -167,17 +167,17 @@
 		}
 
 		//Static
-		public static void CallStaticMethod(this Type classType, string methodName, params object[] args)
+		public static object CallStaticMethod(this Type classType, string methodName, params object[] args)
 		{
 			var metInf = GetMethodInfo(classType, methodName);
 
 			if (metInf == null)
 				throw new Exception(String.Format("Couldn't find method '{0}' using reflection.", methodName));
 
-			if (metInf is MethodInfo) {
-				MethodInfo meta = metInf.As<MethodInfo>();
-				meta.Invoke(null, args);
-			}
+			if (metInf is MethodInfo)
+				return metInf.As<MethodInfo>().Invoke(null, args);
+			
+			return null;
 		}
 
 		public static object GetStaticFieldValue(this Type classType, string fieldName)
